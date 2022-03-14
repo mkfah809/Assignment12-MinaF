@@ -88,6 +88,8 @@ insert into `order_has_pizzas`(order_id,pizza_id) values (3,1);
 insert into `order_has_pizzas`(order_id,pizza_id) values (3,5);
 insert into `order_has_pizzas`(order_id,pizza_id) values (3,6);
 insert into `order_has_pizzas`(order_id,pizza_id) values (1,7);
+UPDATE `pizza_shop`.`order` SET `user_id` = '2' WHERE (`order_id` = '2');
+
 
 -- Q4
 select u.user_name, o.order_dt, sum(p.pizza_amount) "Total History"
