@@ -1,7 +1,7 @@
 -- ***************************************************************
 -- DROP/CREATE/USE DATABASE
-drop database if exists pizza_shop;
 use sys;
+drop database if exists pizza_shop;
 create database pizza_shop;
 use pizza_shop;
 -- ****************************************************************
