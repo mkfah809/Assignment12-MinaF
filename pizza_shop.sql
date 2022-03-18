@@ -13,15 +13,17 @@ drop table if exists `pizza_shop`.`order_has_pizzas`;
 -- ***************************************************************
 -- CREATE TABLES
 CREATE TABLE `pizza_shop`.`pizza` (
-  `pizza_id` INT NOT NULL,
-  `pizza_title` VARCHAR(45) NOT NULL,
-  `pizza_amount` DECIMAL(6,2) NOT NULL,
-  PRIMARY KEY (`pizza_id`));
+    `pizza_id` INT NOT NULL,
+    `pizza_title` VARCHAR(45) NOT NULL,
+    `pizza_amount` DECIMAL(6 , 2 ) NOT NULL,
+    PRIMARY KEY (`pizza_id`)
+);
 CREATE TABLE `pizza_shop`.`user` (
-  `user_id` INT NOT NULL,
-  `user_name` VARCHAR(45) NOT NULL,
-  `phone_number` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`user_id`));
+    `user_id` INT NOT NULL,
+    `user_name` VARCHAR(45) NOT NULL,
+    `phone_number` VARCHAR(45) NOT NULL,
+    PRIMARY KEY (`user_id`)
+);
 CREATE TABLE `pizza_shop`.`order` (
   `order_id` INT NOT NULL,
   `order_dt` VARCHAR(45) NOT NULL,
@@ -88,21 +90,39 @@ insert into `order_has_pizzas`(order_id,pizza_id) values (3,1);
 insert into `order_has_pizzas`(order_id,pizza_id) values (3,5);
 insert into `order_has_pizzas`(order_id,pizza_id) values (3,6);
 insert into `order_has_pizzas`(order_id,pizza_id) values (1,7);
-UPDATE `pizza_shop`.`order` SET `user_id` = '2' WHERE (`order_id` = '2');
+UPDATE `pizza_shop`.`order` 
+SET 
+    `user_id` = '2'
+WHERE
+    (`order_id` = '2');
 
 
 -- Q4
-select u.user_name, o.order_dt, sum(p.pizza_amount) "Total History"
-from `user` u, `order` o, `order_has_pizzas` ohp, `pizza` p 
-where u.user_id = o.user_id
-and o.order_id = ohp.order_id
-and p.pizza_id = ohp.pizza_id
-group by u.user_name;
+SELECT 
+    u.user_name, o.order_dt, SUM(p.pizza_amount) 'Total History'
+FROM
+    `user` u,
+    `order` o,
+    `order_has_pizzas` ohp,
+    `pizza` p
+WHERE
+    u.user_id = o.user_id
+        AND o.order_id = ohp.order_id
+        AND p.pizza_id = ohp.pizza_id
+GROUP BY u.user_name;
 
--- Q5
-select u.user_name, o.order_dt, sum(p.pizza_amount) "Total History"
-from `user` u, `order` o, `order_has_pizzas` ohp, `pizza` p 
-where u.user_id = o.user_id
-and o.order_id = ohp.order_id
-and p.pizza_id = ohp.pizza_id
-group by u.user_name,o.order_dt;
+-- q5
+SELECT 
+    u.user_id,
+    u.user_name,
+    order_dt AS `order date`,
+    SUM(pizza_amount) AS `daily total`
+FROM
+    pizza p
+        JOIN
+    order_has_pizzas ohp USING (pizza_id)
+        JOIN
+    `order` o USING (order_id)
+        JOIN
+    `user` u USING (user_id)
+GROUP BY order_dt;
