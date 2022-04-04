@@ -1,5 +1,3 @@
--- ***************************************************************
--- DROP/CREATE/USE DATABASE
 use sys;
 drop database if exists pizza_shop;
 create database pizza_shop;
@@ -10,46 +8,36 @@ drop table if exists `pizza_shop`.`user`;
 drop table if exists `pizza_shop`.`pizza`;
 drop table if exists `pizza_shop`.`order`;
 drop table if exists `pizza_shop`.`order_has_pizzas`;
--- ***************************************************************
--- CREATE TABLES
-CREATE TABLE `pizza_shop`.`pizza` (
-  `pizza_id` INT NOT NULL,
-  `pizza_title` VARCHAR(45) NOT NULL,
-  `pizza_amount` DECIMAL(6,2) NOT NULL,
-  PRIMARY KEY (`pizza_id`));
-CREATE TABLE `pizza_shop`.`user` (
-  `user_id` INT NOT NULL,
-  `user_name` VARCHAR(45) NOT NULL,
-  `phone_number` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`user_id`));
-CREATE TABLE `pizza_shop`.`order` (
-  `order_id` INT NOT NULL,
-  `order_dt` VARCHAR(45) NOT NULL,
-  `user_id` INT NULL,
+-- ****************************************************************
+CREATE TABLE `user` (
+  `user_id` int NOT NULL,
+  `user_name` varchar(45) NOT NULL,
+  `phone_number` varchar(45) NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `order` (
+  `order_id` int NOT NULL,
+  `order_dt` datetime NOT NULL,
+  `user_id` int DEFAULT NULL,
   PRIMARY KEY (`order_id`),
-  INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
-  CONSTRAINT `user_id`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `pizza_shop`.`user` (`user_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
-CREATE TABLE `pizza_shop`.`order_has_pizzas` (
-  `pizza_id` INT NULL,
-  `order_id` INT NULL,
-  INDEX `pizza_id_idx` (`pizza_id` ASC) VISIBLE,
-  INDEX `order_id_idx` (`order_id` ASC) VISIBLE,
-  CONSTRAINT `pizza_id`
-    FOREIGN KEY (`pizza_id`)
-    REFERENCES `pizza_shop`.`pizza` (`pizza_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `order_id`
-    FOREIGN KEY (`order_id`)
-    REFERENCES `pizza_shop`.`order` (`order_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
--- *******************************************************************
--- INSERT STATEMENTS
+  KEY `user_id_idx` (`user_id`),
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `pizza` (
+  `pizza_id` int NOT NULL,
+  `pizza_title` varchar(45) NOT NULL,
+  `pizza_amount` decimal(6,2) NOT NULL,
+  PRIMARY KEY (`pizza_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `order_has_pizzas` (
+  `pizza_id` int DEFAULT NULL,
+  `order_id` int DEFAULT NULL,
+  KEY `pizza_id_idx` (`pizza_id`),
+  KEY `order_id_idx` (`order_id`),
+  CONSTRAINT `order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`),
+  CONSTRAINT `pizza_id` FOREIGN KEY (`pizza_id`) REFERENCES `pizza` (`pizza_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- ****************************************************************
 insert into `pizza` values (1, "Pepperoni & cheese",7.99);
 insert into `pizza` values (2, "Vegetarian",9.99);
 insert into `pizza` values (3, "Meat Lovers",14.99);
@@ -60,49 +48,48 @@ INSERT INTO `pizza` VALUES ('7', 'Cheese Lovers', '14.99');
 insert into `user` values(1,"Mina K Fahmy", "222-222-222");
 insert into `user` values(2,"Lyly Rezq", "333-333-3333");
 insert into `user` values(3,"Elon Musk", "777-777-7777");
-insert into `user` values(4,"Jeff Bezoz", "999-999-9999");
-insert into `user` values(5,"John William", "666-666-6666");
-insert into `user` values(6,"Jane Doe", "555-555-5555");
-insert into `user` values(7,"Johnny Depp", "888-888-8888");
-insert into `order` values(1,"9/10/2014 9:47:00 PM",1);
-insert into `order` values(2,"9/10/2014 10:47:00 PM",1);
-insert into `order` values(3,"9/11/2014 9:50:00 PM",1);
-insert into `order` values(4,"9/12/2014 3:47:00 PM",2);
-insert into `order` values(5,"9/13/2014 9:47:00 PM",2);
-insert into `order` values(7,"9/11/2015 9:47:00 PM",2);
-insert into `order` values(8,"9/10/2014 10:47:00 PM",7);
-insert into `order` values(9,"9/10/2014 10:47:00 PM",4);
-insert into `order` values(10,"9/11/2014 10:50:00 PM",7);
-insert into `order` values(11,"9/11/2014 10:47:00 PM",7);
-insert into `order` values(12,"9/10/2014 10:47:00 PM",5);
-insert into `order` values(13,"9/10/2014 10:47:00 PM",5);
-insert into `order_has_pizzas`(order_id,pizza_id) values (1,1);
-insert into `order_has_pizzas`(order_id,pizza_id) values (2,1);
-insert into `order_has_pizzas`(order_id,pizza_id) values (2,2);
-insert into `order_has_pizzas`(order_id,pizza_id) values (2,2);
-insert into `order_has_pizzas`(order_id,pizza_id) values (2,4);
-insert into `order_has_pizzas`(order_id,pizza_id) values (1,1);
-insert into `order_has_pizzas`(order_id,pizza_id) values (3,1);
-insert into `order_has_pizzas`(order_id,pizza_id) values (3,2);
-insert into `order_has_pizzas`(order_id,pizza_id) values (3,1);
-insert into `order_has_pizzas`(order_id,pizza_id) values (3,5);
-insert into `order_has_pizzas`(order_id,pizza_id) values (3,6);
-insert into `order_has_pizzas`(order_id,pizza_id) values (1,7);
-UPDATE `pizza_shop`.`order` SET `user_id` = '2' WHERE (`order_id` = '2');
-
-
+insert into `order` values(1,'2014-09-09 10:47:00',1);
+insert into `order` values(2,'2014-09-10 11:47:00',2);
+insert into `order` values(3,'2014-09-09 4:50:00',1);
+insert into `order` values(4,'2014-09-09 6:47:00',2);
+insert into `order_has_pizzas` values (1,1);
+insert into `order_has_pizzas` values (2,1);
+insert into `order_has_pizzas` values (2,2);
+insert into `order_has_pizzas` values (2,2);
+insert into `order_has_pizzas` values (2,4);
+insert into `order_has_pizzas` values (1,1);
+insert into `order_has_pizzas` values (3,1);
+insert into `order_has_pizzas` values (3,2);
+insert into `order_has_pizzas` values (3,1);
+-- ***************************************************************
 -- Q4
-select u.user_name, o.order_dt, sum(p.pizza_amount) "Total History"
-from `user` u, `order` o, `order_has_pizzas` ohp, `pizza` p 
-where u.user_id = o.user_id
-and o.order_id = ohp.order_id
-and p.pizza_id = ohp.pizza_id
-group by u.user_name;
-
+SELECT 
+    u.user_name, o.order_dt, SUM(p.pizza_amount) 'Total History'
+FROM
+    `user` u,
+    `order` o,
+    `order_has_pizzas` ohp,
+    `pizza` p
+WHERE
+    u.user_id = o.user_id
+        AND o.order_id = ohp.order_id
+        AND p.pizza_id = ohp.pizza_id
+GROUP BY u.user_name;
 -- Q5
-select u.user_name, o.order_dt, sum(p.pizza_amount) "Total History"
-from `user` u, `order` o, `order_has_pizzas` ohp, `pizza` p 
-where u.user_id = o.user_id
-and o.order_id = ohp.order_id
-and p.pizza_id = ohp.pizza_id
-group by u.user_name,o.order_dt;
+SELECT
+    u.user_id,
+    u.user_name,
+    CAST(o.order_dt AS DATE) AS `order date`,
+    SUM(pizza_amount) AS `daily total`
+FROM
+    `order` o,
+    `user` u,
+    `order_has_pizzas` ohp,
+    `pizza` p
+WHERE
+    o.user_id = u.user_id
+        AND ohp.order_id = o.order_id
+        AND ohp.pizza_id = p.pizza_id
+GROUP BY o.order_dt ;
+
+
